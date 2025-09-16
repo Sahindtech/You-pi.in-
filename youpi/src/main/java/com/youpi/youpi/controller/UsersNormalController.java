@@ -5,13 +5,22 @@ import com.youpi.youpi.service.UsersNormalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List; // Yeh import add karein
+
 @RestController
-@RequestMapping("/api/user-normal")
+// ✅ Step 1: URL ko "users-normal" (plural) kiya gaya hai
+@RequestMapping("/api/users-normal")
+// Note: Aapka CorsConfig file theek hai, isliye yahan @CrossOrigin ki zaroorat nahi hai
 public class UsersNormalController {
 
     @Autowired
     private UsersNormalService usersNormalService;
 
+    // ✅ Step 2: Sabhi users ko fetch karne ke liye naya endpoint
+    @GetMapping
+    public List<UsersNormal> getAllUsers() {
+        return usersNormalService.getAllUsers();
+    }
 
     // create a new profile
     @PostMapping("/create")
@@ -19,16 +28,18 @@ public class UsersNormalController {
         return usersNormalService.createUserProfile(newUser.getMobileNumber(), newUser);
     }
 
-    // ✅ Get user profile
+    // Get user profile
     @GetMapping("/profile")
     public UsersNormal getProfile(@RequestParam String mobileNumber) {
         return usersNormalService.getUserProfile(mobileNumber);
     }
 
-    // ✅ Update user profile
+    // Update user profile
     @PutMapping("/profile")
     public UsersNormal updateProfile(@RequestParam String mobileNumber,
                                      @RequestBody UsersNormal updatedData) {
         return usersNormalService.updateUserProfile(mobileNumber, updatedData);
     }
+
+
 }

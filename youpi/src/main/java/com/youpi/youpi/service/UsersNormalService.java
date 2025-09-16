@@ -4,6 +4,7 @@ import com.youpi.youpi.entity.UsersNormal;
 import com.youpi.youpi.repository.UsersNormalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class UsersNormalService {
@@ -40,5 +41,9 @@ public class UsersNormalService {
         user.setEmail(updatedData.getEmail());
 
         return usersNormalRepository.save(user);
+    }
+
+    public List<UsersNormal> getAllUsers() {
+        return usersNormalRepository.findAll();
     }
 }
