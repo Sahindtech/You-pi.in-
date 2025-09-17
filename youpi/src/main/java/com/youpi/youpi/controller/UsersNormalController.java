@@ -3,6 +3,7 @@ package com.youpi.youpi.controller;
 import com.youpi.youpi.entity.UsersNormal;
 import com.youpi.youpi.service.UsersNormalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List; // Yeh import add karein
@@ -41,5 +42,11 @@ public class UsersNormalController {
         return usersNormalService.updateUserProfile(mobileNumber, updatedData);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        usersNormalService.deleteUser(id);
+        // Success par 204 No Content response bhejein
+        return ResponseEntity.noContent().build();
+    }
 
 }

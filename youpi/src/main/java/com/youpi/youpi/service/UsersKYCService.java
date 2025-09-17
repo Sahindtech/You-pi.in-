@@ -1,11 +1,16 @@
 package com.youpi.youpi.service;
 
+import com.youpi.youpi.dto.UsersKycStatusDTO;
 import com.youpi.youpi.entity.UsersKYC;
 import com.youpi.youpi.entity.UsersNormal;
 import com.youpi.youpi.repository.UsersKYCRepository;
 import com.youpi.youpi.repository.UsersNormalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors; // Yeh import add karna zaroori hai
 
 @Service
 public class UsersKYCService {
@@ -16,10 +21,36 @@ public class UsersKYCService {
     @Autowired
     private UsersNormalRepository usersNormalRepository;
 
+    // ✅ Yeh naya method add karein
+    public List<UsersKycStatusDTO> getAllUsersWithKycStatus() {
+        // Saare normal users fetch karein
+        List<UsersNormal> allUsers = usersNormalRepository.findAll();
+
+        return allUsers.stream().map(user -> {
+            // Har user ke liye KYC record check karein
+            UsersKYC kyc = usersKYCRepository.findByUserId_Id(user.getId()).orElse(null);
+
+            boolean kycSubmitted = (kyc != null);
+            String kycStatus = kycSubmitted ? kyc.getKycStatus().toString() : "NOT_SUBMITTED";
+            String name = user.getFirstName() + " " + user.getLastName();
+
+            return new UsersKycStatusDTO(user.getId(), name, user.getMobileNumber(), kycSubmitted, kycStatus);
+        }).collect(Collectors.toList());
+    }
+
     // 🔹 Get KYC by userId
     public UsersKYC getKycByUserId(Long userId) {
         return usersKYCRepository.findByUserId_Id(userId)
                 .orElseThrow(() -> new RuntimeException("KYC not found for userId: " + userId));
+    }
+
+    // ✅ REQUIRED: Delete KYC by userId
+    @Transactional
+    public void deleteKycByUserId(Long userId) {
+        if (!usersKYCRepository.existsByUserId_Id(userId)) {
+            throw new RuntimeException("KYC not found for user ID: " + userId);
+        }
+        usersKYCRepository.deleteByUserId_Id(userId);
     }
 
     // 🔹 Create new KYC (first time user fills profile)

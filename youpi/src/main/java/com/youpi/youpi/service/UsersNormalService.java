@@ -46,4 +46,12 @@ public class UsersNormalService {
     public List<UsersNormal> getAllUsers() {
         return usersNormalRepository.findAll();
     }
+
+    public void deleteUser(Long id) {
+        // Check karein ki user exist karta hai ya nahi, agar nahi to exception throw karein
+        if (!usersNormalRepository.existsById(id)) {
+            throw new RuntimeException("User not found with id: " + id);
+        }
+        usersNormalRepository.deleteById(id);
+    }
 }
