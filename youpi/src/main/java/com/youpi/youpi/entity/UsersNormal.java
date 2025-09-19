@@ -27,6 +27,12 @@ public class UsersNormal {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
+
+    // ✅ Naya field add karein
+    @Column(nullable = false, columnDefinition = "BIT(1) DEFAULT 1")
+    private boolean active = true; // Default value true rakhein
+
+
     // Audit fields
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -74,6 +80,14 @@ public class UsersNormal {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

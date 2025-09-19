@@ -49,4 +49,10 @@ public class UsersNormalController {
         return ResponseEntity.noContent().build();
     }
 
+    // ✅ User ka status toggle karne ke liye naya endpoint
+    @PutMapping("/{userId}/toggle-status")
+    public UsersNormal toggleUserStatus(@PathVariable Long userId) {
+        return usersNormalService.toggleUserStatus(userId);
+    }
+
 }

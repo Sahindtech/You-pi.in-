@@ -54,4 +54,17 @@ public class UsersNormalService {
         }
         usersNormalRepository.deleteById(id);
     }
+
+
+    // ✅ User ka status badalne ke liye naya method
+    public UsersNormal toggleUserStatus(Long userId) {
+        UsersNormal user = usersNormalRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+        // Status ko toggle karein (true se false, false se true)
+        user.setActive(!user.isActive());
+
+        return usersNormalRepository.save(user);
+    }
+
 }
