@@ -1,30 +1,40 @@
-//package com.youpi.youpi.config;
+//package com.youpi.youpi.config; // Aapka package name
 //
 //import com.google.auth.oauth2.GoogleCredentials;
 //import com.google.firebase.FirebaseApp;
 //import com.google.firebase.FirebaseOptions;
-//import org.springframework.context.annotation.Configuration;
+//import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.core.io.ClassPathResource;
+//import org.springframework.stereotype.Service;
 //
-//import javax.annotation.PostConstruct;
-//import java.io.FileInputStream;
+//import jakarta.annotation.PostConstruct;
 //import java.io.IOException;
+//import java.io.InputStream;
 //
-//@Configuration
+//@Service
 //public class FirebaseConfig {
 //
+//    // Yeh value aapke application.properties se aayegi
+//    @Value("${app.firebase-configuration-file}")
+//    private String firebaseConfigPath;
+//
 //    @PostConstruct
-//    public void initFirebase() throws IOException {
-//        // baad me actual path dalna serviceAccountKey.json ka
-//        FileInputStream serviceAccount =
-////                with in the ( "" )the credentials will be paste here.
-//                new FileInputStream("src/main/resources/firebase/serviceAccountKey.json");
+//    public void initialize() {
+//        try {
+//            // serviceAccountKey.json file ko resources folder se load karein
+//            InputStream serviceAccount = new ClassPathResource(firebaseConfigPath).getInputStream();
 //
-//        FirebaseOptions options = FirebaseOptions.builder()
-//                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-//                .build();
+//            FirebaseOptions options = new FirebaseOptions.Builder()
+//                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+//                    .build();
 //
-//        if (FirebaseApp.getApps().isEmpty()) { // prevent multiple init
-//            FirebaseApp.initializeApp(options);
+//            // Check karein ki app pehle se initialize toh nahi hai
+//            if (FirebaseApp.getApps().isEmpty()) {
+//                FirebaseApp.initializeApp(options);
+//                System.out.println("Firebase application has been initialized");
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
 //        }
 //    }
 //}

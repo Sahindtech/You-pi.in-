@@ -11,4 +11,6 @@ public interface UsersNormalRepository extends JpaRepository<UsersNormal, Long> 
     Optional<UsersNormal> findByMobileNumber(String mobileNumber);
 
     Optional<Object> findById(UsersKYCService userId);
+
+    Optional<Object> findByEmail(String email);
 }

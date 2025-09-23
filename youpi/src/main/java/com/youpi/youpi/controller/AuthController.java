@@ -1,45 +1,47 @@
 //package com.youpi.youpi.controller;
 //
-//import com.youpi.youpi.service.UsersNormalService;
-//import jakarta.servlet.http.HttpSession;
+//import com.youpi.youpi.dto.RegistrationRequest; // Neeche diye gaye DTO ko import karein
+//import com.youpi.youpi.entity.UsersNormal;
+//import com.youpi.youpi.service.AuthService;
 //import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.http.ResponseEntity;
 //import org.springframework.web.bind.annotation.*;
-//import com.google.firebase.auth.FirebaseAuth;
-//import com.google.firebase.auth.FirebaseAuthException;
-//import com.google.firebase.auth.FirebaseToken;
-//
 //
 //@RestController
 //@RequestMapping("/api/auth")
 //public class AuthController {
 //
 //    @Autowired
-//    private UsersNormalService usersNormalService;
+//    private AuthService authService;
 //
-//    // Step 1: Verify Firebase ID Token (instead of OTP)
-//    @PostMapping("/verify-firebase")
-//    public String verifyFirebase(@RequestParam String idToken, HttpSession session) {
+//    /**
+//     * Step 1 of Registration: Verify phone token and send email link.
+//     * Frontend will call this after phone OTP verification.
+//     */
+//    @PostMapping("/register/start")
+//    public ResponseEntity<String> startRegistration(@RequestBody RegistrationRequest request) {
 //        try {
-//            // Firebase se token verify karo
-//            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+//            String responseMessage = authService.startRegistration(request.getIdToken(), request);
+//            return ResponseEntity.ok(responseMessage);
+//        } catch (Exception e) {
+//            // RuntimeException ko handle karein (jaise user already exists)
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    }
 //
-//// Phone number fetch from claims
-//            String mobileNumber = (String) decodedToken.getClaims().get("phone_number");
-//            if (mobileNumber == null) {
-//                return "Invalid Firebase token: Phone number missing!";
-//            }
-//
-//            // User DB me check karo
-//            if(UsersNormalService.getUserIfExists(mobileNumber) == null){
-//                UsersNormalService.createUser(mobileNumber);
-//            }
-//
-//            // Session me save
-//            session.setAttribute("mobileNumber", mobileNumber);
-//            return "Firebase verified! User logged in.";
-//
-//        } catch (FirebaseAuthException e) {
-//            return "Firebase verification failed: " + e.getMessage();
+//    /**
+//     * Step 2 of Registration: Finalize after user clicks the email link.
+//     * This endpoint is the URL you provide in the ActionCodeSettings.
+//     */
+//    @GetMapping("/register/finalize")
+//    public String finalizeRegistration(@RequestParam String uid) {
+//        try {
+//            authService.finalizeRegistration(uid);
+//            // User ko ek success page dikhayein
+//            return "<h1>Registration Successful!</h1><p>Your email has been verified and your account is created. You can now close this window.</p>";
+//        } catch (Exception e) {
+//            // Error page dikhayein
+//            return "<h1>Registration Failed!</h1><p>" + e.getMessage() + "</p>";
 //        }
 //    }
 //}

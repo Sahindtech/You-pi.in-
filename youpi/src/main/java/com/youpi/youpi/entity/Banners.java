@@ -2,6 +2,7 @@ package com.youpi.youpi.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "banners")
@@ -20,11 +21,9 @@ public class Banners {
     @Column(name = "redirect_link", length = 255)
     private String redirectLink;
 
-    @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
     @Column(nullable = false)
     private boolean active = true;
@@ -63,22 +62,11 @@ public class Banners {
     public void setRedirectLink(String redirectLink) {
         this.redirectLink = redirectLink;
     }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
     public boolean isActive() {
         return active;
