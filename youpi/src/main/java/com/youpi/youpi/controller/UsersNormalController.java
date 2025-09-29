@@ -55,4 +55,11 @@ public class UsersNormalController {
         return usersNormalService.toggleUserStatus(userId);
     }
 
+
+    // ✅ Login endpoint
+    @PostMapping("/login")
+    public UsersNormal login(@RequestBody com.youpi.youpi.dto.LoginRequestDTO loginRequest) {
+        return usersNormalService.loginUser(loginRequest.getMobileNumber(), loginRequest.getPassword());
+    }
+
 }

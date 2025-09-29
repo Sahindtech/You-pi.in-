@@ -35,5 +35,11 @@ public class UsersKYCController {
         return ResponseEntity.noContent().build();
     }
 
+    // ✅ Admin ke liye: KYC ko verify karne ka endpoint
+    @PutMapping("/{userId}/verify")
+    public UsersKYC verifyUserKyc(@PathVariable Long userId) {
+        return usersKYCService.verifyKyc(userId);
+    }
+
     // ... (Your existing POST and PUT methods are fine)
 }

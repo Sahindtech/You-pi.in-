@@ -32,7 +32,7 @@ public class UsersKYCService {
 
             boolean kycSubmitted = (kyc != null);
             String kycStatus = kycSubmitted ? kyc.getKycStatus().toString() : "NOT_SUBMITTED";
-            String name = user.getFirstName() + " " + user.getLastName();
+            String name = user.getFullName();
 
             return new UsersKycStatusDTO(user.getId(), name, user.getMobileNumber(), kycSubmitted, kycStatus);
         }).collect(Collectors.toList());
@@ -51,6 +51,27 @@ public class UsersKYCService {
             throw new RuntimeException("KYC not found for user ID: " + userId);
         }
         usersKYCRepository.deleteByUserId_Id(userId);
+    }
+
+    // ✅ Admin use karega isko KYC verify karne ke liye
+    @Transactional
+    public UsersKYC verifyKyc(Long userId) {
+        // Step 1: User ki KYC details nikalein
+        UsersKYC kyc = getKycByUserId(userId);
+
+        // Step 2: User ki normal details nikalein
+        UsersNormal user = kyc.getUserId();
+
+        // Step 3: KYC status ko VERIFIED set karein
+        kyc.setKycStatus(UsersKYC.KycStatus.VERIFIED);
+        kyc.setKycVerifiedAt(java.time.LocalDateTime.now()); // verification time bhi set kar dein
+
+        // Step 4: User ka 'isVerified' status true karein
+        user.setVerified(true);
+
+        // Step 5: Dono changes ko save karein
+        usersNormalRepository.save(user);
+        return usersKYCRepository.save(kyc);
     }
 
     // 🔹 Create new KYC (first time user fills profile)
