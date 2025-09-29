@@ -8,17 +8,21 @@ WORKDIR /app
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
 
-# Step 4: Dependencies download karein (taaki build fast ho)
+# ✅✅✅ YEH NAYI LINE HAI ✅✅✅
+# Step 4: mvnw ko run karne ki permission dein
+RUN chmod +x ./mvnw
+
+# Step 5: Dependencies download karein (taaki build fast ho)
 RUN ./mvnw dependency:go-offline
 
-# Step 5: Poore source code ko copy karein
+# Step 6: Poore source code ko copy karein
 COPY src ./src
 
-# Step 6: Application ko package karein (JAR file banayein)
+# Step 7: Application ko package karein (JAR file banayein)
 RUN ./mvnw clean package -DskipTests
 
-# Step 7: Batayein ki app kaun se port par chalegi
+# Step 8: Batayein ki app kaun se port par chalegi
 EXPOSE 8080
 
-# Step 8: Application ko run karne ki final command
+# Step 9: Application ko run karne ki final command
 CMD ["java", "-jar", "target/youpi-0.0.1-SNAPSHOT.jar"]
