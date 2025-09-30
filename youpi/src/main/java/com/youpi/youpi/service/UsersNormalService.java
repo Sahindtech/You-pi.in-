@@ -80,4 +80,11 @@ public class UsersNormalService {
         return user;
     }
 
+    // ... existing loginUser method upar
+
+    // ✅ Check if user exists by mobile number
+    public boolean checkIfUserExists(String mobileNumber) {
+        return usersNormalRepository.existsByMobileNumber(mobileNumber);
+    }
+
 }

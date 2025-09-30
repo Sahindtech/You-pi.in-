@@ -62,4 +62,13 @@ public class UsersNormalController {
         return usersNormalService.loginUser(loginRequest.getMobileNumber(), loginRequest.getPassword());
     }
 
+    // ... existing login endpoint upar
+
+    // ✅ Check if a user exists by mobile number
+    @GetMapping("/check")
+    public ResponseEntity<Boolean> checkUserExists(@RequestParam String mobileNumber) {
+        boolean exists = usersNormalService.checkIfUserExists(mobileNumber);
+        return ResponseEntity.ok(exists);
+    }
+
 }
