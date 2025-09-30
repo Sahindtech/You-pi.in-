@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "usersnormal")
+@Table(name = "usersnormal") // ✅ Yeh humne pehle hi theek kar diya tha
 public class UsersNormal {
 
     @Id
@@ -27,16 +27,16 @@ public class UsersNormal {
     @Column(nullable = false, length = 10)
     private String gender;
 
-    @Column(nullable = false, length = 255) // Length 255 rakhein for hashed passwords
+    @Column(nullable = true, length = 255) // ✅ Password ko nullable=true kar diya, kyunki aap Firebase use kar rahe hain
     private String password;
 
-    // ✅ Status fields
-    @Column(name = "is_active", nullable = false, columnDefinition = "BIT(1) DEFAULT 1")
+    // --- ✅✅✅ YAHAN CHANGE HUA HAI ✅✅✅ ---
+    @Column(name = "is_active", nullable = false)
     private boolean active = true; // User active hai ya nahi
 
-    // ✅ Naya field yahan add kiya hai
-    @Column(name = "is_verified", nullable = false, columnDefinition = "BIT(1) DEFAULT 0")
-    private boolean verified = false; // User verified hai ya nahi (default false)
+    @Column(name = "is_verified", nullable = false)
+    private boolean verified = false; // User verified hai ya nahi
+    // Humne columnDefinition = "BIT(1)..." waali line hata di hai
 
 
     // Audit fields
@@ -49,24 +49,7 @@ public class UsersNormal {
     // Constructors
     public UsersNormal() {}
 
-    public UsersNormal(String mobileNumber, String fullName, String email) {
-        this.mobileNumber = mobileNumber;
-        this.fullName = fullName;
-        this.email = email;
-    }
-
-    // Lifecycle hooks
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
+    // ... Baaki saara code (Getters and Setters, etc.) same rahega ...
     // --- Getters & Setters ---
 
     public Long getId() { return id; }
@@ -89,7 +72,6 @@ public class UsersNormal {
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
 
-    // ✅ Naye field ka Getter aur Setter
     public boolean isVerified() { return verified; }
     public void setVerified(boolean verified) { this.verified = verified; }
 
@@ -104,4 +86,16 @@ public class UsersNormal {
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    // Lifecycle hooks
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }
