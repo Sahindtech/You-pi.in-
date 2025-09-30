@@ -26,7 +26,7 @@ public class UsersNormalController {
     // create a new profile
     @PostMapping("/create")
     public UsersNormal createUser(@RequestBody UsersNormal newUser) {
-        return usersNormalService.createUserProfile(newUser.getMobileNumber(), newUser);
+        return usersNormalService.createUserProfile(newUser);
     }
 
     // Get user profile

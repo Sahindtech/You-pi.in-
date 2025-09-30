@@ -14,9 +14,9 @@ public class UsersNormalService {
 
 
     // create a new profile
-    public UsersNormal createUserProfile(String mobileNumber, UsersNormal newUser) {
+    public UsersNormal createUserProfile(UsersNormal newUser) {
         // Check if mobileNumber already exists
-        if (usersNormalRepository.findByMobileNumber(newUser.getMobileNumber()).isPresent()) {
+        if (usersNormalRepository.existsByMobileNumber(newUser.getMobileNumber())) {
             throw new RuntimeException("User already exists");
         }
         return usersNormalRepository.save(newUser);
