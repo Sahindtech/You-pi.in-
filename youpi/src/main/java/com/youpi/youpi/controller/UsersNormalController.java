@@ -32,7 +32,7 @@ public class UsersNormalController {
 
     // Get user profile // login
     @PostMapping("/login")
-    public UsersNormal login(@RequestParam MobileRequestDTO request) {
+    public UsersNormal login(@RequestBody MobileRequestDTO request) {
         return usersNormalService.getUserProfile(request.getMobileNumber());
     }
 
@@ -67,7 +67,7 @@ public class UsersNormalController {
 
     // ✅ Check if a user exists by mobile number
     @PostMapping("/check")
-    public ResponseEntity<Boolean> checkUserExists(@RequestParam MobileRequestDTO request) {
+    public ResponseEntity<Boolean> checkUserExists(@RequestBody MobileRequestDTO request) {
         boolean exists = usersNormalService.checkIfUserExists(request.getMobileNumber());
         return ResponseEntity.ok(exists);
     }
