@@ -3,6 +3,7 @@ package com.youpi.youpi.controller;
 import com.youpi.youpi.entity.UsersNormal;
 import com.youpi.youpi.service.UsersNormalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.youpi.youpi.dto.MobileRequestDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,10 +30,10 @@ public class UsersNormalController {
         return usersNormalService.createUserProfile(newUser);
     }
 
-    // Get user profile
-    @GetMapping("/profile")
-    public UsersNormal getProfile(@RequestParam String mobileNumber) {
-        return usersNormalService.getUserProfile(mobileNumber);
+    // Get user profile // login
+    @PostMapping("/login")
+    public UsersNormal login(@RequestParam MobileRequestDTO request) {
+        return usersNormalService.getUserProfile(request.getMobileNumber());
     }
 
     // Update user profile
@@ -65,9 +66,9 @@ public class UsersNormalController {
     // ... existing login endpoint upar
 
     // ✅ Check if a user exists by mobile number
-    @GetMapping("/check")
-    public ResponseEntity<Boolean> checkUserExists(@RequestParam String mobileNumber) {
-        boolean exists = usersNormalService.checkIfUserExists(mobileNumber);
+    @PostMapping("/check")
+    public ResponseEntity<Boolean> checkUserExists(@RequestParam MobileRequestDTO request) {
+        boolean exists = usersNormalService.checkIfUserExists(request.getMobileNumber());
         return ResponseEntity.ok(exists);
     }
 
