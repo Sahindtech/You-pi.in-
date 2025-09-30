@@ -1,6 +1,5 @@
-package com.youpi.youpi.config; // apne project ka package name daalo
+package com.youpi.youpi.config;
 
-import io.micrometer.common.lang.NonNullApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -14,7 +13,8 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("*") // frontend URL
+                        // ✅✅✅ YAHAN CHANGE KIYA HAI ✅✅✅
+                        .allowedOriginPatterns("*") // .allowedOrigins("*") ki jagah yeh use karein
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
