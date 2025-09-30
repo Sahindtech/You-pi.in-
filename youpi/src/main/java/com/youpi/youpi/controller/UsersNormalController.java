@@ -57,10 +57,10 @@ public class UsersNormalController {
 
 
     // ✅ Login endpoint
-    @PostMapping("/login")
-    public UsersNormal login(@RequestBody com.youpi.youpi.dto.LoginRequestDTO loginRequest) {
-        return usersNormalService.loginUser(loginRequest.getMobileNumber(), loginRequest.getPassword());
-    }
+//    @PostMapping("/login")
+//    public UsersNormal login(@RequestBody com.youpi.youpi.dto.LoginRequestDTO loginRequest) {
+//        return usersNormalService.loginUser(loginRequest.getMobileNumber(), loginRequest.getPassword());
+//    }
 
     // ... existing login endpoint upar
 

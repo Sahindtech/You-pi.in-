@@ -66,19 +66,19 @@ public class UsersNormalService {
     }
 
     // ✅ Simple Login using Mobile and Password
-    public UsersNormal loginUser(String mobileNumber, String password) {
-        // Step 1: Mobile number se user ko dhoondein
-        UsersNormal user = usersNormalRepository.findByMobileNumber(mobileNumber)
-                .orElseThrow(() -> new RuntimeException("User not found with this mobile number"));
-
-        // Step 2: Password match karein (Abhi ke liye simple check, baad mein hashing use karein)
-        if (!user.getPassword().equals(password)) {
-            throw new RuntimeException("Invalid password");
-        }
-
-        // Step 3: Agar sab theek hai, to user ki details return karein
-        return user;
-    }
+//    public UsersNormal loginUser(String mobileNumber, String password) {
+//        // Step 1: Mobile number se user ko dhoondein
+//        UsersNormal user = usersNormalRepository.findByMobileNumber(mobileNumber)
+//                .orElseThrow(() -> new RuntimeException("User not found with this mobile number"));
+//
+//        // Step 2: Password match karein (Abhi ke liye simple check, baad mein hashing use karein)
+//        if (!user.getPassword().equals(password)) {
+//            throw new RuntimeException("Invalid password");
+//        }
+//
+//        // Step 3: Agar sab theek hai, to user ki details return karein
+//        return user;
+//    }
 
     // ... existing loginUser method upar
 
