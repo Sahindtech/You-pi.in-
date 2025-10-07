@@ -4,6 +4,7 @@ public class UpdateProfileRequestDTO {
     private String fullName;
     private String email;
     private String gender;
+    private String profileImageUrl;
 
     // Getters and Setters
     public String getFullName() {
@@ -12,6 +13,14 @@ public class UpdateProfileRequestDTO {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 
     public String getEmail() {

@@ -55,19 +55,17 @@ public class UsersNormalService {
         return usersNormalRepository.save(user);
     }
 
-    // ✅ Profile update karne ke liye naya aur aacha logic
+    // ✅ Profile update karne ke liye updated logic
     public UsersNormal updateUserProfile(String mobileNumber, UpdateProfileRequestDTO updatedData) {
-        // Step 1: Mobile number se user ko dhoondein
         UsersNormal existingUser = usersNormalRepository.findByMobileNumber(mobileNumber)
                 .orElseThrow(() -> new RuntimeException("User not found with mobile number: " + mobileNumber));
 
-        // Step 2: Sirf unhi fields ko update karein jo DTO mein hain
+        // Puraani details ko nayi details se update karein
         existingUser.setFullName(updatedData.getFullName());
         existingUser.setEmail(updatedData.getEmail());
         existingUser.setGender(updatedData.getGender());
-        // Note: Hum yahan mobileNumber ya fireBaseUUID jaisi cheezein change nahi kar rahe
+        existingUser.setProfileImageUrl(updatedData.getProfileImageUrl()); // ✅ YEH NAYI LINE ADD HUI HAI
 
-        // Step 3: Updated user ko database mein save karein
         return usersNormalRepository.save(existingUser);
     }
 
