@@ -1,5 +1,6 @@
 package com.youpi.youpi.controller;
 
+import com.youpi.youpi.dto.UpdateProfileRequestDTO;
 import com.youpi.youpi.entity.UsersNormal;
 import com.youpi.youpi.service.UsersNormalService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +37,9 @@ public class UsersNormalController {
         return usersNormalService.getUserProfile(request.getMobileNumber());
     }
 
-    // Update user profile
+    // ✅ Profile update karne ke liye PUT endpoint
     @PutMapping("/profile")
-    public UsersNormal updateProfile(@RequestParam String mobileNumber,
-                                     @RequestBody UsersNormal updatedData) {
+    public UsersNormal updateProfile(@RequestParam String mobileNumber, @RequestBody UpdateProfileRequestDTO updatedData) {
         return usersNormalService.updateUserProfile(mobileNumber, updatedData);
     }
 

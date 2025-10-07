@@ -1,6 +1,7 @@
 package com.youpi.youpi.service;
 
 import com.youpi.youpi.entity.UsersNormal;
+import com.youpi.youpi.dto.UpdateProfileRequestDTO;
 import com.youpi.youpi.repository.UsersNormalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,17 +30,6 @@ public class UsersNormalService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    // Update user profile
-    public UsersNormal updateUserProfile(String mobileNumber, UsersNormal updatedData) {
-        UsersNormal user = usersNormalRepository.findByMobileNumber(mobileNumber)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Update only editable fields
-        user.setFullName(updatedData.getFullName());
-        user.setEmail(updatedData.getEmail());
-
-        return usersNormalRepository.save(user);
-    }
 
     public List<UsersNormal> getAllUsers() {
         return usersNormalRepository.findAll();
@@ -65,20 +55,21 @@ public class UsersNormalService {
         return usersNormalRepository.save(user);
     }
 
-    // ✅ Simple Login using Mobile and Password
-//    public UsersNormal loginUser(String mobileNumber, String password) {
-//        // Step 1: Mobile number se user ko dhoondein
-//        UsersNormal user = usersNormalRepository.findByMobileNumber(mobileNumber)
-//                .orElseThrow(() -> new RuntimeException("User not found with this mobile number"));
-//
-//        // Step 2: Password match karein (Abhi ke liye simple check, baad mein hashing use karein)
-//        if (!user.getPassword().equals(password)) {
-//            throw new RuntimeException("Invalid password");
-//        }
-//
-//        // Step 3: Agar sab theek hai, to user ki details return karein
-//        return user;
-//    }
+    // ✅ Profile update karne ke liye naya aur aacha logic
+    public UsersNormal updateUserProfile(String mobileNumber, UpdateProfileRequestDTO updatedData) {
+        // Step 1: Mobile number se user ko dhoondein
+        UsersNormal existingUser = usersNormalRepository.findByMobileNumber(mobileNumber)
+                .orElseThrow(() -> new RuntimeException("User not found with mobile number: " + mobileNumber));
+
+        // Step 2: Sirf unhi fields ko update karein jo DTO mein hain
+        existingUser.setFullName(updatedData.getFullName());
+        existingUser.setEmail(updatedData.getEmail());
+        existingUser.setGender(updatedData.getGender());
+        // Note: Hum yahan mobileNumber ya fireBaseUUID jaisi cheezein change nahi kar rahe
+
+        // Step 3: Updated user ko database mein save karein
+        return usersNormalRepository.save(existingUser);
+    }
 
     // ... existing loginUser method upar
 
