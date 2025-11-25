@@ -50,4 +50,28 @@ public class RechargeDetailsService {
     public void deletePaymentDetail(Long id) {
         repository.deleteById(id);
     }
+
+    // ✅ NEW: Callback Process karne ka Logic
+    public void processCallback(String orderId, String status, String operatorId) {
+        // 1. Order ID (txid) se recharge dhoondo
+        RechargeDetails recharge = repository.findByPaymentReferenceId(orderId)
+                .orElseThrow(() -> new RuntimeException("Order ID not found: " + orderId));
+
+        // 2. Status Update karo
+        if ("Success".equalsIgnoreCase(status)) {
+            recharge.setStatus(RechargeDetails.RechargeStatus.SUCCESS);
+        } else if ("Failure".equalsIgnoreCase(status)) {
+            recharge.setStatus(RechargeDetails.RechargeStatus.FAILED);
+        } else {
+            System.out.println("Unknown Status Received: " + status);
+            recharge.setRemarks("Callback Status: " + status);
+        }
+
+        // 3. Operator ID save karo (Reference ke liye)
+        recharge.setOperatorRefId(operatorId);
+
+        // 4. Save to DB
+        repository.save(recharge);
+        System.out.println("✅ Callback Processed for Order: " + orderId);
+    }
 }

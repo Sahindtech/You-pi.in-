@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouPi API Tester</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background-color: #f4f4f9; }
+        .container { max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        button { flex: 1; padding: 10px; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .btn-check { background-color: #007bff; } /* Blue */
+        .btn-plans { background-color: #17a2b8; } /* Teal */
+        .btn-recharge { background-color: #28a745; } /* Green */
+        button:hover { opacity: 0.9; }
+
+        #response { margin-top: 20px; padding: 10px; background: #e9ecef; border-radius: 4px; white-space: pre-wrap; font-size: 12px; overflow-x: auto; }
+        .error { color: red; border-left: 4px solid red; }
+        .success { color: green; border-left: 4px solid green; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>📡 YouPi Fetch API Tester</h2>
+
+    <div class="form-group">
+        <label>Mobile Number:</label>
+        <input type="text" id="mobile" value="9109815006" placeholder="Enter Mobile Number">
+    </div>
+
+    <div class="form-group">
+        <label>Operator (For Plans):</label>
+        <select id="operator">
+            <option value="Jio">Jio</option>
+            <option value="Airtel">Airtel</option>
+            <option value="Vi">Vodafone Idea</option>
+            <option value="BSNL">BSNL</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Circle (For Plans):</label>
+        <input type="text" id="circle" value="Delhi" placeholder="e.g. Delhi, Mumbai">
+    </div>
+
+    <div class="btn-group">
+        <button class="btn-check" onclick="checkOperator()">🔍 Check Operator</button>
+        <button class="btn-plans" onclick="checkPlans()">📋 View R-Offers</button>
+    </div>
+
+    <div id="response">Response will appear here...</div>
+</div>
+
+<script>
+    const responseDiv = document.getElementById('response');
+
+    // 1️⃣ CHECK OPERATOR API
+    async function checkOperator() {
+        const mobile = document.getElementById('mobile').value;
+        showLoading();
+
+        try {
+            const res = await fetch(`/api/recharge-service/check-operator/${mobile}`);
+            const data = await res.json();
+            showResponse(data);
+        } catch (error) {
+            showError(error);
+        }
+    }
+
+    // 2️⃣ FETCH PLANS API
+    async function checkPlans() {
+        const mobile = document.getElementById('mobile').value;
+        const operator = document.getElementById('operator').value;
+        showLoading();
+
+        try {
+            // Fetching R-Offers (Special Plans)
+            const res = await fetch(`/api/recharge-service/roffer?mobile=${mobile}&operator=${operator}`);
+            // Note: The API returns a String (JSON text), so we parse it
+            const text = await res.text();
+            try {
+                const json = JSON.parse(text);
+                showResponse(json);
+            } catch(e) {
+                showResponse(text); // Show as text if not valid JSON
+            }
+        } catch (error) {
+            showError(error);
+        }
+    }
+
+    // Helpers
+    function showLoading() {
+        responseDiv.style.display = 'block';
+        responseDiv.innerHTML = '⏳ Fetching data from MPlan...';
+        responseDiv.className = '';
+    }
+
+    function showResponse(data) {
+        responseDiv.innerHTML = '<strong>API Output:</strong><br>' + JSON.stringify(data, null, 2);
+
+        // Check for common error flags from MPlan
+        if (data.status === 0 || (data.records && data.records.msg)) {
+            responseDiv.className = 'error';
+        } else {
+            responseDiv.className = 'success';
+        }
+    }
+
+    function showError(error) {
+        responseDiv.innerHTML = '❌ System Error: ' + error.message;
+        responseDiv.className = 'error';
+    }
+</script>
+
+</body>
+</html>

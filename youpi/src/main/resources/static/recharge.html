@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A1Topup Recharge</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #eef2f5; padding: 20px; }
+        .container { max-width: 450px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #34495e; }
+        input, select { width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 14px; transition: border-color 0.3s; }
+        input:focus, select:focus { border-color: #3498db; outline: none; }
+        button { width: 100%; padding: 12px; background-color: #e74c3c; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; transition: background 0.3s; }
+        button:hover { background-color: #c0392b; }
+        #response { margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 6px; font-size: 13px; color: #2c3e50; display: none; border-left: 5px solid #ccc; overflow-x: auto; }
+        .success-border { border-left-color: #28a745 !important; }
+        .error-border { border-left-color: #dc3545 !important; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🚀 A1Topup Recharge</h2>
+
+    <div class="form-group">
+        <label>Mobile Number</label>
+        <input type="text" id="mobile" placeholder="Enter 10 digit number" value="9800000000">
+    </div>
+
+    <div class="form-group">
+        <label>Operator</label>
+        <select id="operatorCode">
+            <option value="">Select Operator</option>
+            <option value="A">Airtel (Code: A)</option>
+            <option value="RC">Jio (Code: RC)</option>
+            <option value="V">Vodafone (Code: V)</option>
+            <option value="I">Idea (Code: I)</option>
+            <option value="BT">BSNL Topup (Code: BT)</option>
+            <option value="BR">BSNL STV (Code: BR)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Circle</label>
+        <select id="circleCode">
+            <option value="">Select Circle</option>
+            <option value="5">Delhi (5)</option>
+            <option value="3">Mumbai (3)</option>
+            <option value="6">Kolkata (6)</option>
+            <option value="4">Maharashtra (4)</option>
+            <option value="12">Gujarat (12)</option>
+            <option value="13">Andhra Pradesh (13)</option>
+            <option value="9">Karnataka (9)</option>
+            <option value="7">Chennai (7)</option>
+            <option value="10">Uttar Pradesh East (10)</option>
+            <option value="11">Uttar Pradesh West (11)</option>
+            <option value="17">Bihar (17)</option>
+            <option value="18">Rajasthan (18)</option>
+            <option value="1">Punjab (1)</option>
+            <option value="2">West Bengal (2)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Amount (₹)</label>
+        <input type="number" id="amount" placeholder="e.g. 10" value="10">
+    </div>
+
+    <button onclick="doA1Recharge()">Proceed to Recharge</button>
+
+    <div id="response"></div>
+</div>
+
+<script>
+    async function doA1Recharge() {
+        const mobile = document.getElementById('mobile').value;
+        const operatorCode = document.getElementById('operatorCode').value;
+        const circleCode = document.getElementById('circleCode').value;
+        const amount = document.getElementById('amount').value;
+        const responseDiv = document.getElementById('response');
+
+        if(!operatorCode || !circleCode) {
+            alert("Please select both Operator and Circle!");
+            return;
+        }
+
+        responseDiv.style.display = 'block';
+        responseDiv.innerHTML = '⏳ Processing Request...';
+        responseDiv.className = '';
+
+        const params = new URLSearchParams();
+        params.append('mobile', mobile);
+        params.append('amount', amount);
+        params.append('operatorCode', operatorCode);
+        params.append('circleCode', circleCode);
+
+        try {
+            const res = await fetch('/api/recharge-service/a1-recharge', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params
+            });
+
+            const text = await res.text();
+
+            try {
+                const json = JSON.parse(text);
+                responseDiv.innerHTML = '<strong>API Response:</strong><br>' + JSON.stringify(json, null, 2);
+
+                if(json.status && json.status.toLowerCase() === 'success') {
+                    responseDiv.classList.add('success-border');
+                } else {
+                    responseDiv.classList.add('error-border');
+                }
+            } catch(e) {
+                responseDiv.innerHTML = '<strong>Raw Response:</strong><br>' + text;
+            }
+
+        } catch (error) {
+            responseDiv.innerHTML = '❌ Error: ' + error.message;
+            responseDiv.classList.add('error-border');
+        }
+    }
+</script>
+
+</body>
+</html>
