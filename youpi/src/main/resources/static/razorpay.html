@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Razorpay Test</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 50px; text-align: center; }
+        button { padding: 10px 20px; background: #3399cc; color: white; border: none; cursor: pointer; font-size: 16px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+<h2>Razorpay Payment Gateway</h2>
+<input type="number" id="amount" placeholder="Enter Amount (INR)" value="1">
+<br><br>
+<button id="rzp-button1">Pay Now</button>
+
+<script>
+    document.getElementById('rzp-button1').onclick = async function (e) {
+        const amount = document.getElementById('amount').value;
+
+        // 1. Call Backend to Create Order
+        const response = await fetch(`/api/payment/create-order?amount=${amount}`, { method: 'POST' });
+        const orderData = await response.json();
+        console.log("Order Created:", orderData);
+
+        var options = {
+            "key": "rzp_live_RqhGovxsqOYVhW", // Enter the Key ID generated from the Dashboard
+            "amount": orderData.amount,
+            "currency": "INR",
+            "name": "YouPi Recharge",
+            "description": "Test Transaction",
+            "order_id": orderData.id,
+            "handler": async function (response){
+                // 2. Payment Success - Verify Signature
+                alert("Payment ID: " + response.razorpay_payment_id);
+
+                const verifyRes = await fetch('/api/payment/verify-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature
+                    })
+                });
+
+                const verifyText = await verifyRes.text();
+                alert(verifyText);
+            },
+            "theme": { "color": "#3399cc" }
+        };
+
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+        e.preventDefault();
+    }
+</script>
+</body>
+</html>
